@@ -4,14 +4,39 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
+import os
 
 from app import app
-from flask import render_template, request
+from flask import render_template, request, jsonify
+# from flask import render_template, request, redirect, url_for, flash, session, abort
+from werkzeug.utils import secure_filename
+from .forms import UploadForm
+
+rootdir = os.getcwd()
+print (rootdir)
 
 ###
 # Routing for your application.
 ###
-
+@app.route('/api/upload', methods=['POST'])
+def upload():
+    form = UploadForm()
+    
+    if request.method == "POST" and form.validate_on_submit():
+        description = form.description.data
+        photo = request.files['photo']
+        filename = secure_filename(photo.filename)
+        
+        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return jsonify(
+                message = "File Upload Successful",
+                filename = filename,
+                description = description
+                )
+                
+    return jsonify(
+            {"errors": form_errors(form)}
+            )
 
 # Please create all new routes and view functions above this route.
 # This route is now our catch all route for our VueJS single page
