@@ -22,21 +22,22 @@ print (rootdir)
 def upload():
     form = UploadForm()
     
-    if request.method == "POST" and form.validate_on_submit():
-        description = form.description.data
-        photo = request.files['photo']
-        filename = secure_filename(photo.filename)
-        
-        photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return jsonify(
-                message = "File Upload Successful",
-                filename = filename,
-                description = description
-                )
+    if request.method == "POST":
+        if form.validate_on_submit():
+            description = form.description.data
+            photo = request.files['photo']
+            filename = secure_filename(photo.filename)
+            
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return jsonify(
+                    message = "File Upload Successful",
+                    filename = filename,
+                    description = description
+                    )
                 
-    return jsonify(
-            {"errors": form_errors(form)}
-            )
+        return jsonify(
+                {"errors": form_errors(form)}
+                )
 
 # Please create all new routes and view functions above this route.
 # This route is now our catch all route for our VueJS single page
