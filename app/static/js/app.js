@@ -58,6 +58,9 @@ const UploadForm = Vue.component('upload-form', {
     template: `
     <form @submit.prevent="uploadPhoto" method='post' encType="multipart/form-data" id="uploadForm">
         <h2>Upload a Photo</h2>
+        <ul v-if="messages">
+            <li v-for="message in messages" class="messages">{{ message }}</li>
+        </ul>
         <div class="form-group">
             <label for="description">Description</label>
             <textarea name="description" class="form-control"></textarea>
@@ -70,6 +73,11 @@ const UploadForm = Vue.component('upload-form', {
         <button type="submit" name="submit" class="btn btn-primary">Submit</button>
     </form>
     `,
+    data: function() {
+        return {
+            messages: [],
+        }
+    },
     methods: {
         uploadPhoto: function() {
         let self = this;
@@ -90,11 +98,19 @@ const UploadForm = Vue.component('upload-form', {
             .then(function (jsonResponse) {
                 // display a success message
                 console.log(jsonResponse);
+                if (jsonResponse.message) {
+                    self.messages.push(jsonResponse.message)
+                }
+                else {
+                    for (var i = 0; i < jsonResponse.errors.length; i++) {
+                        self.messages.push(jsonResponse.errors[i])
+                    }
+                }
             })
             .catch(function (error) {
                 console.log(error);
             });
-        }
+        },
     } 
 })
 
