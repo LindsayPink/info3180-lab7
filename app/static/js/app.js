@@ -58,7 +58,7 @@ const UploadForm = Vue.component('upload-form', {
     template: `
     <form @submit.prevent="uploadPhoto" method='post' encType="multipart/form-data" id="uploadForm">
         <h2>Upload a Photo</h2>
-        <ul v-if="messages">
+        <ul id="ul" v-if="messages">
             <li v-for="message in messages" class="messages">{{ message }}</li>
         </ul>
         <div class="form-group">
@@ -100,18 +100,20 @@ const UploadForm = Vue.component('upload-form', {
                 console.log(jsonResponse);
                 if (jsonResponse.message) {
                     self.messages.push(jsonResponse.message)
+                    document.getElementById("ul").setAttribute('class', 'alert alert-success');
                 }
                 else {
                     for (var i = 0; i < jsonResponse.errors.length; i++) {
                         self.messages.push(jsonResponse.errors[i])
                     }
+                    document.getElementById("ul").setAttribute('class', 'alert alert-danger');
                 }
             })
             .catch(function (error) {
                 console.log(error);
             });
         },
-    } 
+    }
 })
 
 // Define Routes
