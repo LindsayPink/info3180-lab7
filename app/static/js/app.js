@@ -99,12 +99,14 @@ const UploadForm = Vue.component('upload-form', {
                 // display a success message
                 console.log(jsonResponse);
                 if (jsonResponse.message) {
-                    self.messages.push(jsonResponse.message)
+                    self.messages = [];
+                    self.messages.push(jsonResponse.message);
                     document.getElementById("ul").setAttribute('class', 'alert alert-success');
                 }
                 else {
+                    self.messages = [];
                     for (var i = 0; i < jsonResponse.errors.length; i++) {
-                        self.messages.push(jsonResponse.errors[i])
+                        self.messages.push(jsonResponse.errors[i]);
                     }
                     document.getElementById("ul").setAttribute('class', 'alert alert-danger');
                 }
